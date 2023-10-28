@@ -1,3 +1,5 @@
+import json
+
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
@@ -67,8 +69,11 @@ async def message_handler(msg: Message):
             result = list(collection.aggregate(aggregation_pipeline))
 
             # Добавляем результаты агрегации в массивы данных и меток
-            if result:
-                dataset.append(result[0]["total_salary"])
+            if current_date != dt_upto:
+                if result:
+                    dataset.append(result[0]["total_salary"])
+                else:
+                    dataset.append(0)
             else:
                 dataset.append(0)
 
@@ -81,6 +86,7 @@ async def message_handler(msg: Message):
             "dataset": dataset,
             "labels": labels
         }
+        response = json.dumps(response)
 
         await msg.answer(f'{response}')
     else:
